@@ -47,7 +47,7 @@ router.post('/notifidata', async (req, res) => {
 
 // Función para enviar notificación usando Firebase Cloud Messaging
 const sendNotification = async (deviceNotiToken, title, message) => {
-  const serverKey = 'YOUR_FIREBASE_SERVER_KEY'; // Clave del servidor de Firebase
+  const serverKey = '454269727f80d7731404fcb18e581b7ea4961d5d'; // Clave del servidor de Firebase
   const fcmUrl = 'https://fcm.googleapis.com/fcm/send';
 
   const notificationPayload = {
