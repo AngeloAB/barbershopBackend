@@ -12,7 +12,7 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 });
 
-// Crear una notificación
+// Crear una notificación PARA QUE SE VEA
 router.post('/addNotifi', async (req, res) => {
   const { title, message, time } = req.body;
 
