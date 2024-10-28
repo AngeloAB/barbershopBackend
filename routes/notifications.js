@@ -3,6 +3,13 @@ const Notification = require('../models/Notification');
 const User = require('../models/user');
 const router = express.Router();
 
+const admin = require('firebase-admin');
+const serviceAccount = require('../firebase/kingbarberiashop-firebase-adminsdk-aukjn-454269727f.json');
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
+});
+
 // Crear una notificación
 router.post('/addNotifi', async (req, res) => {
   const { title, message, time } = req.body;
@@ -47,28 +54,29 @@ router.post('/notifidata', async (req, res) => {
 
 // Función para enviar notificación usando Firebase Cloud Messaging
 const sendNotification = async (deviceNotiToken, title, message) => {
-  const serverKey = '454269727f80d7731404fcb18e581b7ea4961d5d'; // Clave del servidor de Firebase
-  const fcmUrl = 'https://fcm.googleapis.com/fcm/send';
-
-  const notificationPayload = {
-    to: deviceNotiToken,
+  const messagePayload = {
+    token: deviceNotiToken,
     notification: {
       title: title,
       body: message,
-      sound: 'default'
-    }
+    },
+    android: {
+      priority: 'high',
+    },
+    apns: {
+      payload: {
+        aps: {
+          sound: 'default',
+        },
+      },
+    },
   };
 
   try {
-    const response = await axios.post(fcmUrl, notificationPayload, {
-      headers: {
-        Authorization: `key=${serverKey}`,
-        'Content-Type': 'application/json'
-      }
-    });
-    console.log('Notificación enviada:', response.data);
+    const response = await admin.messaging().send(messagePayload);
+    console.log('Notificación enviada:', response);
   } catch (error) {
-    console.error('Error al enviar la notificación:', error.response?.data);
+    console.error('Error al enviar la notificación:', error);
   }
 };
 
@@ -76,7 +84,7 @@ const sendNotification = async (deviceNotiToken, title, message) => {
 const sendNotificationToBarberia = async (barberiaId, title, message) => {
   try {
     // Obtener los usuarios que pertenecen a la barbería con el `barberiaId` específico
-    const users = await User.find({ barberiaId });
+    const users = await User.find({ barberiaId: barberiaId });
 
     // Iterar sobre los usuarios y enviar la notificación a cada uno
     users.forEach(user => {
