@@ -2,9 +2,11 @@ const express = require('express');
 const Notification = require('../models/Notification');
 const User = require('../models/user');
 const router = express.Router();
+const dotenv = require('dotenv');
+dotenv.config();
 
 const admin = require('firebase-admin');
-const serviceAccount = require('../firebase/kingbarberiashop-firebase-adminsdk-aukjn-454269727f.json');
+const serviceAccount = require(process.env.FIREBASE);
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
