@@ -6,13 +6,13 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const admin = require('firebase-admin');
-const serviceAccount = require(process.env.FIREBASE);
+const serviceAccount = require('../ServiceAccount.json');
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 });
 
-// Crear una notificación PARA QUE SE VEA
+// Crear una notificación
 router.post('/addNotifi', async (req, res) => {
   const { title, message, time } = req.body;
 

@@ -1,6 +1,9 @@
 # Creado por https://www.toptal.com/developers/gitignore/api/node,dotenv
 # Editar en https://www.toptal.com/developers/gitignore?templates=node,dotenv
 
+##Servicio de firebase
+ServiceAccount.json
+
 ### dotenv ###
 .env
 
