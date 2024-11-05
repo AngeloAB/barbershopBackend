@@ -87,11 +87,11 @@ const sendNotificationToBarberia = async (barberiaId, title, message) => {
   try {
     // Obtener los usuarios que pertenecen a la barbería con el `barberiaId` específico
     const users = await User.find({ barberiaId: barberiaId });
-
+    console.log("usuarios de la barberia: ", users);
     // Iterar sobre los usuarios y enviar la notificación a cada uno
     users.forEach(user => {
-      if (user.deviceToken) {
-        sendNotification(user.deviceToken, title, message);
+      if (user.deviceNotiToken) {
+        sendNotification(user.deviceNotiToken, title, message);
       }
     });
   } catch (error) {
@@ -102,15 +102,19 @@ const sendNotificationToBarberia = async (barberiaId, title, message) => {
 // Endpoint para recibir la solicitud de enviar notificación desde el frontend
 router.post('/send-notification', async (req, res) => {
   const { barberiaId, title, message } = req.body;
+
+ // const { deviceNotiToken, title, message } = req.body;
   
-  if (!barberiaId || !title || !message) {
-    //return res.status(400).json({ message: 'Datos insuficientes para enviar notificación' });
-    return res.send({status: "Error", data: "Datos insuficientes para enviar notificación"});
+  
+    // if (!barberiaId || !title || !message) {
+    //   //return res.status(400).json({ message: 'Datos insuficientes para enviar notificación' });
+    //   return res.send({status: "Error", data: "Datos insuficientes para enviar notificación"});
  
-  }
+    // }
 
   try {
     await sendNotificationToBarberia(barberiaId, title, message);
+   //await sendNotification(deviceNotiToken, title, message);
    // res.status(200).json({ message: 'Notificación enviada correctamente' });
     return res.send({status: "Exito", data: "Notificación enviada correctamente"});
   } catch (error) {

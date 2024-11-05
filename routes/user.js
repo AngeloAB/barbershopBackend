@@ -34,6 +34,7 @@ router.post('/login', async (req, res) => {
 
         if(await bcrypt.compare(password, user.password)){
             const token = jwt.sign({email:user.email}, process.env.JWT_SECRET);
+             
 
             if(res.status(201)){
                 return res.send({status: "Exito", data: token})
@@ -197,6 +198,27 @@ router.post("/updateUser", async (req, res) =>{
                     username,
                     email,
                     password: encryptedPassword,
+                    
+
+                },
+            }
+        );
+        res.send({status: "Exito", data: "Actualizada"});
+
+    }catch(error){
+        return res.send({error: error});
+    }
+});
+
+router.post("/updateTokenFCM", async (req, res) =>{
+    const {userid, deviceNotiToken } = req.body;
+    try{
+
+        await User.updateOne(
+            {_id: userid},
+            {
+                $set:{
+                    deviceNotiToken,
                     
 
                 },
