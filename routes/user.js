@@ -50,6 +50,38 @@ router.post('/login', async (req, res) => {
    
 });
 
+// login
+router.post('/loginAdmin', async (req, res) => {
+    const { email, password } = req.body;
+  
+    // Buscar el usuario
+    const user = await User.findOne({ email });
+  
+    if (!user) {
+      return res.status(401).json({ message: "Usuario o contraseña incorrecta" });
+    }
+  
+    // Verificar contraseña
+    const passwordMatch = await bcrypt.compare(password, user.password);
+    if (!passwordMatch) {
+      return res.status(401).json({ message: "Usuario o contraseña incorrecta" });
+    }
+  
+    // Crear token
+    const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET, {
+      expiresIn: "1d",
+    });
+  
+    // Devolver token y usuario (sin contraseña)
+    const { password: _, ...userWithoutPassword } = user.toObject();
+  
+    return res.status(200).json({
+      token,
+      user: userWithoutPassword,
+    });
+  });
+  
+
 //Obtener datos del usuario
 
 router.post('/userdata', async (req, res) =>{
