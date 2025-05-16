@@ -8,7 +8,7 @@ router.post('/addBarberia', async (req, res) => {
     const { name, propietario, pais, telefono} = req.body;
   
     try {
-      const barberiaNew = await Barberias.create({ name, propietario, pais, telefono });
+      const barberiaNew = await Barberias.create({ name, propietarioId: "h", propietario, pais, telefono });
       
 
       // Crear membresía gratuita de 10 días
@@ -106,6 +106,27 @@ router.post("/updateBarberia", async (req, res) =>{
     }catch(error){
         return res.send({error: error});
     }
+});
+
+router.post("/updateBarberiaUser", async (req, res) =>{
+  const {barberiaId, propietarioId } = req.body;
+  try{
+      
+      await Barberias.updateOne(
+          {_id: barberiaId},
+          {
+              $set:{
+                propietarioId
+                  
+
+              },
+          }
+      );
+      res.send({status: "Exito", data: "Actualizada"});
+
+  }catch(error){
+      return res.send({error: error});
+  }
 });
 
 // Eliminar un barbero

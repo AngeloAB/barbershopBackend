@@ -149,9 +149,9 @@ router.post('/addUser', asyncHandler(async (req, res) => {
     const encryptedPassword = await bcrypt.hash(password,10);
 
     try {
-        await User.create ({ username, email, password: encryptedPassword, role: 'admin', barberiaId, preferenciaBarber: 'Ninguna', preferenciaCorte:  'Ninguna', deviceNotiToken});
+      const userdata =  await User.create ({ username, email, password: encryptedPassword, role: 'admin', barberiaId, preferenciaBarber: 'Ninguna', preferenciaCorte:  'Ninguna', deviceNotiToken});
        // const newUser = await user.save();
-        res.send({status: "Exito", data: "Usuario creado"});
+        res.send({status: "Exito", data: "Usuario creado", userdata: userdata });
       //  res.json({ success: true, message: "User created successfully.", data: null });
     } catch (error) {
        // res.status(500).json({ success: false, message: error.message });
