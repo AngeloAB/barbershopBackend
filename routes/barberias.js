@@ -49,6 +49,50 @@ router.post('/dataBarberia', async (req, res) => {
   
   });
 
+
+  // Leer (Obtener todas las barberias mas usuarios y membresias)
+  router.get("/dataClientesAdmin", async (req, res) => {
+    try {
+      const data = await Barberia.aggregate([
+        {
+          $lookup: {
+            from: "users",
+            localField: "propietarioId",
+            foreignField: "_id",
+            as: "usuario"
+          }
+        },
+        { $unwind: "$usuario" },
+        {
+          $lookup: {
+            from: "membresias",
+            localField: "_id",
+            foreignField: "barberiaId",
+            as: "membresia"
+          }
+        },
+        { $unwind: "$membresia" },
+        {
+          $project: {
+            _id: 0,
+            nombre: "$usuario.username",
+            email: "$usuario.email",
+            estado: "$membresia.estado",
+            barberia: "$name",
+            plan: "$membresia.plan",
+            fechaInicio: "$membresia.fechaInicio",
+            fechaFin: "$membresia.fechaFin"
+          }
+        }
+      ]);
+  
+      res.json(data);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ mensaje: "Error al generar el reporte" });
+    }
+  });
+
   // Leer (Obtener  barberia por id)
 router.post('/dataBarberiaID', async (req, res) => {
     const {barberiaId} = req.body;
