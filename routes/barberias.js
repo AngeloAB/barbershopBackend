@@ -1,6 +1,7 @@
 const express = require('express');
 const Barberias = require('../models/Barberias');
 const Membresia = require('../models/Membresia');
+const ObjectId = mongoose.Types.ObjectId;
 const router = express.Router();
 
 // Crear una barberia
@@ -55,9 +56,16 @@ router.post('/dataBarberia', async (req, res) => {
     try {
       const data = await Barberia.aggregate([
         {
+          $addFields: {
+            propietarioObjectId: {
+              $toObjectId: "$propietarioId"
+            }
+          }
+        },
+        {
           $lookup: {
             from: "users",
-            localField: "propietarioId",
+            localField: "propietarioObjectId",
             foreignField: "_id",
             as: "usuario"
           }
@@ -88,7 +96,7 @@ router.post('/dataBarberia', async (req, res) => {
   
       res.json(data);
     } catch (error) {
-      console.error(error);
+      console.error("Error en /dataClientesAdmin:", error);
       res.status(500).json({ mensaje: "Error al generar el reporte" });
     }
   });
