@@ -56,17 +56,18 @@ router.post('/dataBarberia', async (req, res) => {
     try {
       const data = await Barberia.aggregate([
         {
-          $addFields: {
-            propietarioObjectId: {
-              $toObjectId: "$propietarioId"
-            }
-          }
-        },
-        {
           $lookup: {
             from: "users",
-            localField: "propietarioObjectId",
-            foreignField: "_id",
+            let: { propietarioIdStr: "$propietarioId" },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $eq: ["$_id", { $toObjectId: "$$propietarioIdStr" }]
+                  }
+                }
+              }
+            ],
             as: "usuario"
           }
         },
@@ -74,19 +75,27 @@ router.post('/dataBarberia', async (req, res) => {
         {
           $lookup: {
             from: "membresias",
-            localField: "_id",
-            foreignField: "barberiaId",
+            let: { barberiaIdObj: { $toString: "$_id" } }, // Convertimos el ObjectId a string
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $eq: ["$barberiaId", "$$barberiaIdObj"]
+                  }
+                }
+              }
+            ],
             as: "membresia"
           }
         },
-        { $unwind: "$membresia" },
+        { $unwind: { path: "$membresia", preserveNullAndEmptyArrays: true } },
         {
           $project: {
             _id: 0,
-            nombre: "$usuario.username",
+            name: "$usuario.username",
             email: "$usuario.email",
-            estado: "$membresia.estado",
-            barberia: "$name",
+            status: "$membresia.estado",
+            barberiaName: "$name",
             plan: "$membresia.plan",
             fechaInicio: "$membresia.fechaInicio",
             fechaFin: "$membresia.fechaFin"
@@ -96,7 +105,7 @@ router.post('/dataBarberia', async (req, res) => {
   
       res.json(data);
     } catch (error) {
-      console.error("Error en /dataClientesAdmin:", error);
+      console.error(error);
       res.status(500).json({ mensaje: "Error al generar el reporte" });
     }
   });
