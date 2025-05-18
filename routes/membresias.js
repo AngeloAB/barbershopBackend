@@ -63,6 +63,29 @@ router.post('/membresiadata', async (req, res) => {
   }
 });
 
+
+// PATCH /membresias/:id/reset
+router.patch('/:id/reset', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const nuevaFechaInicio = new Date();
+    const nuevaFechaFin = new Date();
+    nuevaFechaFin.setMonth(nuevaFechaInicio.getMonth() + 1); // Ej: 1 mes
+
+    const updated = await Membresia.findByIdAndUpdate(id, {
+      fechaInicio: nuevaFechaInicio.toISOString(),
+      fechaFin: nuevaFechaFin.toISOString(),
+      estado: 'activo',
+    }, { new: true });
+
+    res.json(updated);
+  } catch (error) {
+    console.error('Error al restablecer plan:', error);
+    res.status(500).json({ error: 'Error al restablecer el plan' });
+  }
+});
+
+
 // Leer una venta por ID
 router.get('/:id', async (req, res) => {
   try {

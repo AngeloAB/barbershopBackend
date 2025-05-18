@@ -121,7 +121,8 @@ router.post('/dataBarberia', async (req, res) => {
             barberiaName: "$name",
             plan: "$membresia.plan",
             fechaInicio: "$membresia.fechaInicio",
-            fechaFin: "$membresia.fechaFin"
+            fechaFin: "$membresia.fechaFin",
+            membresiaId: "$membresia._id"
           }
         }
       ]);
