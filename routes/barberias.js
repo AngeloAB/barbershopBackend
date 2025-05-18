@@ -1,7 +1,6 @@
 const express = require('express');
 const Barberias = require('../models/Barberias');
 const Membresia = require('../models/Membresia');
-const ObjectId = mongoose.Types.ObjectId;
 const router = express.Router();
 
 // Crear una barberia
@@ -54,78 +53,86 @@ router.post('/dataBarberia', async (req, res) => {
   // Leer (Obtener todas las barberias mas usuarios y membresias)
   
 
-    router.get("/dataClientesAdmin", async (req, res) => {
-      try {
-        const data = await Barberias.aggregate([
-          // Join con Users
-          {
-            $lookup: {
-              from: "users",
-              let: { propietarioIdStr: "$propietarioId" },
-              pipeline: [
-                {
-                  $match: {
-                    $expr: {
-                      $eq: ["$_id", { $toObjectId: "$$propietarioIdStr" }]
-                    }
+  router.get("/dataClientesAdmin", async (req, res) => {
+    try {
+      const data = await Barberias.aggregate([
+        {
+          $lookup: {
+            from: "users",
+            let: { propietarioIdStr: "$propietarioId" },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      { $eq: [{ $type: "$$propietarioIdStr" }, "string"] },
+                      {
+                        $eq: [
+                          "$_id",
+                          {
+                            $cond: {
+                              if: { $regexMatch: { input: "$$propietarioIdStr", regex: /^[0-9a-fA-F]{24}$/ } },
+                              then: { $toObjectId: "$$propietarioIdStr" },
+                              else: null
+                            }
+                          }
+                        ]
+                      }
+                    ]
                   }
                 }
-              ],
-              as: "usuario"
-            }
-          },
-          {
-            $unwind: {
-              path: "$usuario",
-              preserveNullAndEmptyArrays: false
-            }
-          },
-
-          // Join con Membresías
-          {
-            $lookup: {
-              from: "membresias",
-              let: { barberiaIdStr: { $toString: "$_id" } },
-              pipeline: [
-                {
-                  $match: {
-                    $expr: {
-                      $eq: ["$barberiaId", "$$barberiaIdStr"]
-                    }
-                  }
-                }
-              ],
-              as: "membresia"
-            }
-          },
-          {
-            $unwind: {
-              path: "$membresia",
-              preserveNullAndEmptyArrays: true
-            }
-          },
-
-          // Seleccionamos campos
-          {
-            $project: {
-              _id: 0,
-              name: "$usuario.username",
-              email: "$usuario.email",
-              status: "$membresia.estado",
-              barberiaName: "$name",
-              plan: "$membresia.plan",
-              fechaInicio: "$membresia.fechaInicio",
-              fechaFin: "$membresia.fechaFin"
-            }
+              }
+            ],
+            as: "usuario"
           }
-        ]);
-
-        res.json(data);
-      } catch (error) {
-        console.error("Error en aggregate:", error);
-        res.status(500).json({ mensaje: "Error al generar el reporte" });
-      }
-    });
+        },
+        {
+          $unwind: {
+            path: "$usuario",
+            preserveNullAndEmptyArrays: true
+          }
+        },
+        {
+          $lookup: {
+            from: "membresias",
+            let: { barberiaIdStr: { $toString: "$_id" } },
+            pipeline: [
+              {
+                $match: {
+                  $expr: { $eq: ["$barberiaId", "$$barberiaIdStr"] }
+                }
+              }
+            ],
+            as: "membresia"
+          }
+        },
+        {
+          $unwind: {
+            path: "$membresia",
+            preserveNullAndEmptyArrays: true
+          }
+        },
+        {
+          $project: {
+            _id: 0,
+            name: "$usuario.username",
+            email: "$usuario.email",
+            status: "$membresia.estado",
+            barberiaName: "$name",
+            plan: "$membresia.plan",
+            fechaInicio: "$membresia.fechaInicio",
+            fechaFin: "$membresia.fechaFin"
+          }
+        }
+      ]);
+  
+      return res.json(data);
+    } catch (error) {
+      console.error("❌ Error en /dataClientesAdmin:", error.message);
+      return res.status(500).json({ mensaje: "Error al generar el reporte", error: error.message });
+    }
+  });
+  
 
 
   // Leer (Obtener  barberia por id)
