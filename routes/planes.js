@@ -20,7 +20,7 @@ router.post('/addPlan', async (req, res) => {
 });
 
 
-router.post('/plandata', async (req, res) => {
+router.get('/plandata', async (req, res) => {
   try{
 
       Plan.find().then((data) =>{
@@ -32,7 +32,7 @@ router.post('/plandata', async (req, res) => {
 });
 
 // Actualizar un servicio
-router.post('/update/:id', async (req, res) => {
+router.put('/update/:id', async (req, res) => {
   const {planId, name, price, funciones } = req.body;
 
     try{
@@ -56,7 +56,7 @@ router.post('/update/:id', async (req, res) => {
 });
 
 // Eliminar un servicio
-router.post('/delete/:id', async (req, res) => {
+router.delete('/delete/:id', async (req, res) => {
   const {planId} = req.body;
 
     try {
