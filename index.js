@@ -72,6 +72,7 @@ app.use('/services', require('./routes/services'));
 app.use('/turns', require('./routes/turns'));
 app.use('/users', require('./routes/user'));
 app.use('/payment', require('./routes/payment'));
+app.use('/planes', require('./routes/planes'));
 
 
 // Example route using asyncHandler directly in app.js
