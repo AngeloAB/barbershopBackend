@@ -20,7 +20,7 @@ router.post('/addPlan', async (req, res) => {
 });
 
 
-router.get('/plandata', async (req, res) => {
+router.post('/plandata', async (req, res) => {
   try{
 
       Plan.find().then((data) =>{
