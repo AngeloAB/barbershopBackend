@@ -33,7 +33,7 @@ router.post('/dataPlatform', async (req, res) => {
 
 
 // Actualizar un servicio
-router.post('/updateService', async (req, res) => {
+router.post('/updatePlatform', async (req, res) => {
   const {platfId, web, email, telefono } = req.body;
 
     try{
