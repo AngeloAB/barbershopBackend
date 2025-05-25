@@ -17,7 +17,7 @@ router.post('/addPlatform', async (req, res) => {
 });
 
 // Leer (Obtener todos los servicios)
-router.post('/dataPlatform', async (req, res) => {
+router.get('/dataPlatform', async (req, res) => {
 
   try{
 
