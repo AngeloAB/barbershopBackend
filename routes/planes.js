@@ -32,7 +32,7 @@ router.get('/plandata', async (req, res) => {
 });
 
 // Actualizar un servicio
-router.put('/update/:id', async (req, res) => {
+router.put('/update', async (req, res) => {
   const {planId, name, price, funciones } = req.body;
 
     try{
@@ -56,7 +56,7 @@ router.put('/update/:id', async (req, res) => {
 });
 
 // Eliminar un servicio
-router.delete('/delete/:id', async (req, res) => {
+router.delete('/delete', async (req, res) => {
   const {planId} = req.body;
 
     try {
