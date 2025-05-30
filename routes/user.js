@@ -160,6 +160,36 @@ router.post('/addUser', asyncHandler(async (req, res) => {
 }));
 
 // Create a new user
+router.post('/addUserPlat', asyncHandler(async (req, res) => {
+    const { username, email, password = "123", role, barberiaId, preferenciaBarber, preferenciaCorte,deviceNotiToken} = req.body;
+
+    const oldUser = await User.findOne({email: email});
+
+    
+
+    
+    if ( !username || !email || !password ) {
+        return res.status(400).json({ success: false, message: "Name, and password are required." });
+    }
+
+    if(oldUser){
+        return res.send({data: "Usuario existente"});
+    }
+
+    const encryptedPassword = await bcrypt.hash(password,10);
+
+    try {
+      const userdata =  await User.create ({ username, email, password: encryptedPassword, role, barberiaId: '1', preferenciaBarber: 'Ninguna', preferenciaCorte:  'Ninguna', deviceNotiToken: '1'});
+       // const newUser = await user.save();
+        res.send({status: "Exito", data: "Usuario creado", userdata: userdata });
+      //  res.json({ success: true, message: "User created successfully.", data: null });
+    } catch (error) {
+       // res.status(500).json({ success: false, message: error.message });
+       res.send({status: "Error", data: error});
+    }
+}));
+
+// Create a new user
 router.post('/register', asyncHandler(async (req, res) => {
     const { username, email, password, role, barberiaId, preferenciaBarber, preferenciaCorte, deviceNotiToken} = req.body;
 
