@@ -77,7 +77,7 @@ router.post('/loginAdmin', async (req, res) => {
   
     return res.status(200).json({
       token,
-      user: userWithoutPassword,
+      user: user.toObject(),
     });
   });
   
