@@ -119,13 +119,13 @@ router.get('/userdataAdmin', async (req, res) =>{
 
      try{
  
-         User.find({role: "Administrador" || "Asistente"}).then((data) =>{
+        User.find({ role: { $in: ["Administrador", "Asistente"] } }).then((data) =>{
              return res.send({status: "Exito", data: data});
          });
      } catch(error){
         return res.send({error: error});
      }
-   
+     
  });
 
 
