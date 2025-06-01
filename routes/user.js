@@ -114,6 +114,20 @@ router.post('/barberdata', async (req, res) =>{
   
 });
 
+//Obtener por el rol de administrador
+router.post('/userdataAdmin', async (req, res) =>{
+    
+     try{
+ 
+         User.find({role: "Administrador" || "Asistente"}).then((data) =>{
+             return res.send({status: "Exito", data: data});
+         });
+     } catch(error){
+        return res.send({error: error});
+     }
+   
+ });
+
 
 // Get a user by ID
 router.get('/:id', asyncHandler(async (req, res) => {
