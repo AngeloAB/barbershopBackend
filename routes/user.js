@@ -286,6 +286,29 @@ router.post("/updateUser", async (req, res) =>{
     }
 });
 
+router.post("/updateUserAdmin", async (req, res) =>{
+    const {userid, username, email, role } = req.body;
+    try{
+
+        await User.updateOne(
+            {_id: userid},
+            {
+                $set:{
+                    username,
+                    email,
+                    role,
+                    
+
+                },
+            }
+        );
+        res.send({status: "Exito", data: "Actualizada"});
+
+    }catch(error){
+        return res.send({error: error});
+    }
+});
+
 router.post("/updateTokenFCM", async (req, res) =>{
     const {userid, deviceNotiToken } = req.body;
     try{
