@@ -63,6 +63,18 @@ router.post('/membresiadata', async (req, res) => {
   }
 });
 
+//mostrar todas sin importar barberia
+router.post('/membresiadataAdmin', async (req, res) => {
+  try{
+
+      Membresia.find().then((data) =>{
+          return res.send({status: "Exito", data: data});
+      });
+  } catch(error){
+     return res.send({error: error});
+  }
+});
+
 
 // PATCH /membresias/:id/reset
 router.patch('/:id/reset', async (req, res) => {

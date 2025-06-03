@@ -54,6 +54,8 @@ router.post('/notifidata', async (req, res) => {
   }
 });
 
+
+
 // Función para enviar notificación usando Firebase Cloud Messaging
 const sendNotification = async (deviceNotiToken, title, message) => {
   const messagePayload = {
