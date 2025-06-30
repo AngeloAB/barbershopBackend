@@ -117,6 +117,7 @@ router.post('/dataBarberia', async (req, res) => {
             _id: 0,
             name: "$usuario.username",
             email: "$usuario.email",
+            telefono: "$telefono",
             status: "$membresia.estado",
             barberiaName: "$name",
             plan: "$membresia.plan",
